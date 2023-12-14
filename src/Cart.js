@@ -11,7 +11,8 @@ const Cart = () => {
           <ul>
             {items.map((item, index) => (
               <li key={index}>
-                {item.title} - ${item.price} - {item.quantity}
+                Title = {item.title} <br/> PricePerItem = ${item.price}  <br/>Quantity = {item.quantity}
+                <br/><br/>
               </li>
             ))}
           </ul>
