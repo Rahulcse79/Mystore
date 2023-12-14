@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import Card from './card'; 
+import React, { useEffect, useState } from "react";
+import Card from "./card";
+import { syncQuantityWithCart } from "./productSlice";
+import { useSelector } from "react-redux";
 
 const MenClothProducts = () => {
-  const [menClothing, setMenClothing] = useState([]);
-
-  useEffect(() => {
-    // Define the API endpoint for men's clothing
-    const menClothingUrl = 'https://fakestoreapi.com/products/category/men\'s clothing';
-
-    // Fetch men's clothing products
-    fetch(menClothingUrl)
-      .then((res) => res.json())
-      .then((data) => setMenClothing(data))
-      .catch((error) => console.error('Error fetching men\'s clothing products:', error));
-  }, []);
+  const products = useSelector((state) => state.products.value.products);
+  const cart = useSelector((state) => state.products.value.cart);
+  const menClothing = products
+    .filter((p) => p.category == "men's clothing")
+    .map(syncQuantityWithCart(cart));
 
   return (
     <div>
@@ -21,12 +16,7 @@ const MenClothProducts = () => {
       <div className="row">
         {menClothing.map((product) => (
           <div key={product.id} className="col-md-4">
-            <Card
-              title={product.title}
-              Description={product.description}
-              imageurl={product.image}
-              price={product.price}
-            />
+            <Card product={product} />
           </div>
         ))}
       </div>

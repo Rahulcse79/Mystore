@@ -1,34 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import Card from './card';
+import React, { useEffect, useState } from "react";
+import Card from "./card";
+import { syncQuantityWithCart } from "./productSlice";
+import { useSelector } from "react-redux";
 
 const WomenClothProducts = () => {
-  const [womenClothing, setWomenClothing] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const womenClothingUrl = 'https://fakestoreapi.com/products/category/women\'s clothing';
-
-    fetch(womenClothingUrl)
-      .then((res) => res.json())
-      .then((data) => {
-        setWomenClothing(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError('Error fetching women\'s clothing products');
-        setLoading(false);
-        console.error('Error fetching women\'s clothing products:', error);
-      });
-  }, []);
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>{error}</p>;
-  }
+  const products = useSelector((state) => state.products.value.products);
+  const cart = useSelector((state) => state.products.value.cart);
+  const womenClothing = products
+    .filter((p) => p.category == "women's clothing")
+    .map(syncQuantityWithCart(cart));
 
   return (
     <div>
@@ -39,12 +19,7 @@ const WomenClothProducts = () => {
         <div className="row">
           {womenClothing.map((product) => (
             <div key={product.id} className="col-md-4">
-              <Card
-                title={product.title}
-                Description={product.description}
-                imageurl={product.image}
-                price={product.price}
-              />
+              <Card product={product} />
             </div>
           ))}
         </div>
